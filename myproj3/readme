@@ -1,0 +1,4 @@
+in gitrepo: 
+greedy_local_search.py --> without constraints of connected components and dijkstra
+greedy_local_search copy_new.py --> after adding all the constraints
+
