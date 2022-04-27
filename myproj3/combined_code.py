@@ -375,9 +375,9 @@ print("isConnected: ",isConnected())
 
 print("atleast 3 neighbours: ", bbb)
 
-# executionTime = (time.time() - startTime)
-# print('Execution time in seconds: ' + str(executionTime))
-# show_graph_with_labels(np.array(adjaceny_matrix))
+executionTime = (time.time() - startTime)
+print('Execution time in seconds: ' + str(executionTime))
+show_graph_with_labels(np.array(adjaceny_matrix))
 
 ############################################ Algo 2 ############################################
 
@@ -435,10 +435,8 @@ plt.ylabel('cost')
 plt.legend()
 plt.show()
 
+executionTime = (time.time() - startTime)
+print('Execution time in seconds: ' + str(executionTime))
 
-
-# executionTime = (time.time() - startTime)
-# print('Execution time in seconds: ' + str(executionTime))
-
-# show_graph_with_labels(np.array(adjaceny_matrix))
+show_graph_with_labels(np.array(adjaceny_matrix))
 
