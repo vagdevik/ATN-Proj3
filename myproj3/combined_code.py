@@ -52,7 +52,7 @@ def computeDistances_1(coordinates):
 			dists_matrix[j][i] = dists_matrix[i][j]
 	return dists_matrix
 
-# compute distances matrix for Algorithm1
+# compute distances matrix for Algorithm2
 def computeDistances_2(coordinates):
 	dists_matrix = [[0 for _ in range(N)] for _ in range(N)]
 	for i in range(len(coordinates)):
@@ -79,48 +79,18 @@ def dfs(vertice, adjacency_list, visited):
             dfs(adj_vertice, adjacency_list, visited)   
 
 # returrn index of unvisited vertex of minimum distance 
-def minDistance(dist, sptSet, n):
-	# Initialize minimum distance for next node
+def minDistance(dist, spt_set, n):
 	min = 1e7
 	min_index = ''
 	for v in range(n):
-		if dist[v] <= min and sptSet[v] == False:
+		if dist[v] <= min and spt_set[v] == False:
 			min = dist[v]
 			min_index = v
 	return min_index
 
-# function to check if graph of Algorithm 1 is connected
-def isConnected_1(adjaceny_matrix):
-    edges = []
-    for i in range(N):
-        for j in range(N):
-            if adjaceny_matrix[i][j]==1:
-                s = [i,j]
-                s.sort()
-                if s not in edges:	
-                    edges.append(s)
-    count = 0
-    visited = set()
-    adjacency_list = []
-    
-    for i in range(N):
-        adjacency_list.append([])
-        
-    for edge in edges:
-        adjacency_list[edge[0]].append(edge[1])
-        adjacency_list[edge[1]].append(edge[0])
 
-    for vertice in range(N):            
-        if vertice not in visited:
-            dfs(vertice, adjacency_list, visited)
-            count += 1
-    
-    if count == 1:
-    	return True
-    return False
-
-# function to check if graph of Algorithm 2 is connected
-def isConnected_2():
+# function to check if graph is connected
+def isConnected():
     edges = []
     for i in range(N):
         for j in range(N):
@@ -194,7 +164,7 @@ def reconstructNetwork():
 		y = edge[1]
 		if adjaceny_matrix[x][y] and adjaceny_matrix[y][x]:
 			adjaceny_matrix[x][y], adjaceny_matrix[y][x] = 0, 0
-			c = isConnected_2()
+			c = isConnected()
 			k = atmost4Diameter_2()
 			nei = atleast3neighbours_2(x, y)
 			if not c or not k or not nei:
@@ -221,7 +191,7 @@ def reconstructNetwork():
 	for i in range(N):
 				if adjaceny_matrix[i].count(1)<3:
 					bbb = False
-	if bbb and d and isConnected_2():
+	if bbb and d and isConnected():
 		return True
 	return False
 
@@ -231,7 +201,7 @@ def isNetworkValid():
 	nei = True
 	c = True
 	for u in range(N):
-		c = isConnected_1(adjaceny_matrix)
+		c = isConnected()
 
 		k = atmost4Diameter_1(u, N)
 		x = len([element for element in k if element > 4])
@@ -269,14 +239,14 @@ def constructNetwork(dists_matrix, k):
 def dijkstra(src):
 	dist = [1e7] * N
 	dist[src] = 0
-	sptSet = [False] * N
+	spt_set = [False] * N
 
 	for cout in range(N):
-		u = minDistance(dist, sptSet, N)
-		sptSet[int(u)] = True
+		u = minDistance(dist, spt_set, N)
+		spt_set[int(u)] = True
 
 		for v in range(N):
-			if (adjaceny_matrix[u][v] > 0 and sptSet[v] == False and dist[v] > dist[u] + adjaceny_matrix[u][v]):
+			if (adjaceny_matrix[u][v] > 0 and spt_set[v] == False and dist[v] > dist[u] + adjaceny_matrix[u][v]):
 				dist[v] = dist[u] + adjaceny_matrix[u][v]
 	return dist
 
@@ -327,9 +297,16 @@ def show_graph_with_labels(adjacency_matrix):
 
 ############################ Main Function ############################
 
+
+N_vals = [17,24,32,47,56]
+
 # take input no of nodes
-print("Enter the number of nodes:")
-N = int(input())
+for ntimes in N_vals:
+	N = ntimes
+	print("The number of nodes:")
+	print(N)
+	# print("Enter the number of nodes:")
+	# N = int(input())
 
 # generate N random 2D coordinates
 coordinates = generateCoordinates(N)
@@ -376,8 +353,11 @@ while a==False:
 		print(" Cost for", count_its2, "iteration is:", cost)
 
 
+algo1_costs = []
 print("Finally: ")
 cost = networkCost()
+algo1_costs.append(cost)
+
 print("$$$$$$$ Cost for", N, "nodes with iterations", count_its2,"  is:", cost)
 bbb = True
 count=0
@@ -391,13 +371,13 @@ max_n = -1
 for i in range(N):
 	max_n = max(max_n, max(dijkstra(i)))
 print("Graph Diameter: ",max_n )
-print("isConnected: ",isConnected_1(adjaceny_matrix))
+print("isConnected: ",isConnected())
 
 print("atleast 3 neighbours: ", bbb)
 
-executionTime = (time.time() - startTime)
-print('Execution time in seconds: ' + str(executionTime))
-show_graph_with_labels(np.array(adjaceny_matrix))
+# executionTime = (time.time() - startTime)
+# print('Execution time in seconds: ' + str(executionTime))
+# show_graph_with_labels(np.array(adjaceny_matrix))
 
 ############################################ Algo 2 ############################################
 
@@ -422,21 +402,43 @@ while not a:
 	print("Cost for", rec_cons_count, "iteration is:", cost)
 
 cost = networkCost()
+algo2_costs = []
+algo2_costs.append(cost)
+
 print("Finally: ")
 print("$$$$$$$ Cost for", N, "nodes with iterations", rec_cons_count, "  is:", cost)
 max_n = -1
 for i in range(N):
 	max_n = max(max_n, max(dijkstra(i)))
 print("Graph Diameter: ",max_n )
-print("isConnected: ",isConnected_2())
+print("isConnected: ",isConnected())
 bbb = True
 for i in range(N):
 			if adjaceny_matrix[i].count(1)<3:
 				bbb = False
 print("atleast 3 neighbours: ", bbb)
 
-executionTime = (time.time() - startTime)
-print('Execution time in seconds: ' + str(executionTime))
 
-show_graph_with_labels(np.array(adjaceny_matrix))
+
+y1 = np.array(algo1_costs)
+y2 = np.array(algo2_costs)
+
+plt.plot(y1, label='Algo 1')
+plt.plot(y2, label='Algo 2')
+
+plt.plot(N_vals, y1, label="algo1", marker='o')
+plt.plot(N_vals, y2, label="algo2", marker='o')
+
+plt.title('Number of nodes vs Cost of the network')
+plt.xlabel('number of nodes')
+plt.ylabel('cost')
+plt.legend()
+plt.show()
+
+
+
+# executionTime = (time.time() - startTime)
+# print('Execution time in seconds: ' + str(executionTime))
+
+# show_graph_with_labels(np.array(adjaceny_matrix))
 
